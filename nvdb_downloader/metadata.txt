@@ -1,21 +1,22 @@
 [general]
-name=NVDB downloader
+name=Geodata: NVDB (Trafikverket)
 qgisMinimumVersion=3.34
 qgisMaximumVersion=4.99
-description=Searches, selects and download transport network data from NVDB.
+supportsQt6=True
+description=Search and download NVDB road data from Trafikverket's open API
 version=0.1.0
 author=Mats Elfström
 email=mats.elfstrom@gmail.com
-about=Searches, selects and download transport network data from NVDB. Replace this with a longer description in English.
+about=Download NVDB road data (speed limits, road numbers, road network and more) from Trafikverket's open API for the current map extent or all of Sweden, saved as GeoPackage in SWEREF 99 TM. A second tab emulates Lantmäteriet's Topografi 10 road layers from NVDB and styles them like Topo10. Requires a free API key from data.trafikverket.se. The plugin is independent and not developed by Trafikverket or Lantmäteriet.
 tracker=https://github.com/matself/nvdb-downloader/issues
 repository=https://github.com/matself/nvdb-downloader
 homepage=https://github.com/matself/nvdb-downloader
-category=Plugins
+category=Web
 icon=icon.svg
-tags=
+tags=nvdb,trafikverket,sweden,roads,open data,topo10
 experimental=True
 deprecated=False
 license=GPL-2.0-or-later
-hasProcessingProvider=yes
+hasProcessingProvider=no
 changelog=
     0.1.0 - Initial version
