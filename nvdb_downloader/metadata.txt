@@ -1,5 +1,5 @@
 [general]
-name=Geodata: NVDB (Trafikverket)
+name=Geodata: NVDB downloader (Trafikverket)
 qgisMinimumVersion=3.34
 qgisMaximumVersion=4.99
 supportsQt6=True

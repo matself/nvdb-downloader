@@ -1,6 +1,6 @@
 """Endpoints and constants for Trafikverket's Öppna API (NVDB data)."""
 
-PLUGIN_NAME = "Geodata: NVDB (Trafikverket)"
+PLUGIN_NAME = "Geodata: NVDB downloader (Trafikverket)"
 SETTINGS_PREFIX = "nvdb_downloader"
 
 API_URL = "https://api.trafikinfo.trafikverket.se/v2/data.json"
