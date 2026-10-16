@@ -6,9 +6,11 @@ from datetime import datetime
 from pathlib import Path
 
 from qgis.core import (
+    Qgis,
     QgsApplication,
     QgsCoordinateReferenceSystem,
     QgsCoordinateTransform,
+    QgsMessageLog,
     QgsProject,
     QgsSettings,
     QgsVectorLayer,
@@ -252,10 +254,24 @@ class NvdbDock(QDockWidget):
             layer = QgsVectorLayer(f"{gpkg}|layername={layer_name}", title or layer_name, "ogr")
             if layer.isValid():
                 qml = Path(__file__).resolve().parent.parent / "styles" / f"{style}.qml"
-                if style and qml.exists():
-                    layer.loadNamedStyle(str(qml))
+                if style:
+                    self._apply_style(layer, qml)
                 self._add_layer(layer, group, order)
         self._task_done()
+
+    @staticmethod
+    def _apply_style(layer, qml: Path) -> None:
+        if not qml.exists():
+            QgsMessageLog.logMessage(
+                f"Stilfil saknas: {qml}", PLUGIN_NAME, Qgis.MessageLevel.Warning
+            )
+            return
+        message, ok = layer.loadNamedStyle(str(qml))
+        if not ok:
+            QgsMessageLog.logMessage(
+                f"Kunde inte ladda stilen {qml.name}: {message}", PLUGIN_NAME,
+                Qgis.MessageLevel.Warning,
+            )
 
     @staticmethod
     def _add_layer(layer, group_name: str, order: int) -> None:
