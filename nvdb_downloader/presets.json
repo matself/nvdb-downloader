@@ -29,7 +29,8 @@
           "style": "vagnat_vagslag"
         },
         {
-          "dataset": "Vägtrafiknät"
+          "dataset": "Vägtrafiknät",
+          "style": "vagnat_vagtrafiknat"
         }
       ]
     }
