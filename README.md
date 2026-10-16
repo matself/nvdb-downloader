@@ -14,20 +14,10 @@ with data; namespace and schema version are set per type in
 
 ## Two tabs
 1. **Rådata** – pick any NVDB table and an area, get the records as they are.
-2. **Topo10-uttag** – emulates Lantmäteriet's Topografi 10 road layers from NVDB and
-   applies the Topo10 style (extracted from a Topo10 `.qlr` with
-   `tools/make_topo10_style.py`). Each layer is a *recipe* in `nvdb_downloader/core/topo10.py`:
-   source tables + attribute mapping + QML.
-
-| Topo10 layer | Built from | Known gaps |
-|---|---|---|
-| Väglinje | Vägslag | Oklassificerad (1816) does not occur in the API |
-| Vägpunkt | Väghinder, Rastplatser, Korsning (cirkulationsplats) | No Vändmöjlighet or Trafikplats; Väghinder rotation fixed at 0 |
-| Färjeled | Färjeled | Only the ferry name is mapped |
-
-Övrig väg and Rälstrafik are not NVDB products and are not emulated. If you only need
-Topo10 itself, Lantmäteriet's ready-made Topografi 10 download is simpler; this tab is for
-NVDB's fresher data and for cutting out an area through the API.
+2. **Uttag** – ready-made presets: a selection of tables fetched together, put in a layer
+   group and styled with QML from `nvdb_downloader/styles/`. A preset is defined in
+   `nvdb_downloader/presets.json` (tables + style per layer). The first preset is a road
+   network for cars, bikes and pedestrians; its tables and style are still tentative.
 
 ## API
 | | |
@@ -41,9 +31,6 @@ The key is stored in QGIS' encrypted authentication database, never in plain tex
 
 ## Known issues
 - A single request with `limit=200000` hung; pages stay at 10 000.
-- Gaps in the road network in a Stockholm test extent are not yet explained (compare with
-  Topo10's `vaglinje`).
-- The Topo10 QML styles come from a Lantmäteriet `.qlr`; check redistribution terms.
 
 ## Development
 
