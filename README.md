@@ -18,6 +18,9 @@ with data; namespace and schema version are set per type in
    group and styled with QML from `nvdb_downloader/styles/`. A preset is defined in
    `nvdb_downloader/presets.json` (tables + style per layer). The first preset is a road
    network for cars, bikes and pedestrians; its tables and style are still tentative.
+   The `Vägslag` style is derived from Lantmäteriet's Topografi 10 `.qlr` with
+   `tools/make_vagslag_style.py` (three Väglinje layers merged, filters rewritten to the raw
+   NVDB fields). Check the redistribution terms of the `.qlr` before publishing.
 
 ## API
 | | |

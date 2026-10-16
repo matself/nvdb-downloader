@@ -25,7 +25,8 @@
           "dataset": "GCMVägtyp"
         },
         {
-          "dataset": "Vägslag"
+          "dataset": "Vägslag",
+          "style": "vagnat_vagslag"
         },
         {
           "dataset": "Vägtrafiknät"
