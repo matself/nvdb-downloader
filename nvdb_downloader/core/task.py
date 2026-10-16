@@ -28,6 +28,7 @@ class SourceSpec:
 class DownloadTask(QgsTask):
     completed = pyqtSignal(str, str, int, str)  # gpkg path, layer name, count, style
     failed = pyqtSignal(str)
+    empty = pyqtSignal(str)  # layer name: the query succeeded but matched nothing
     status = pyqtSignal(str)
 
     def __init__(
@@ -54,6 +55,7 @@ class DownloadTask(QgsTask):
         self.gpkg_path = output_dir / f"{layer_name}_{stamp}.gpkg"
         self.feature_count = 0
         self.error: str | None = None
+        self.no_hits = False
         self._feedback = QgsFeedback()
 
     def cancel(self) -> None:
@@ -83,7 +85,7 @@ class DownloadTask(QgsTask):
         if self.isCanceled():
             return False
         if not records:
-            self.error = "Sökningen gav inga träffar."
+            self.no_hits = True
             return False
         self.status.emit(f"{len(records)} objekt – skriver GeoPackage…")
         try:
@@ -101,6 +103,8 @@ class DownloadTask(QgsTask):
             self.completed.emit(
                 str(self.gpkg_path), self.layer_name, self.feature_count, self.style
             )
+        elif self.no_hits:
+            self.empty.emit(self.layer_name)
         elif not self.isCanceled():
             message = self.error or "Okänt fel"
             QgsMessageLog.logMessage(message, PLUGIN_NAME, Qgis.MessageLevel.Critical)

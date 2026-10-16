@@ -52,6 +52,7 @@ class NvdbDock(QDockWidget):
         self.settings = QgsSettings()
         self._tasks: list[DownloadTask] = []
         self._pending = 0
+        self._empty: list[str] = []
 
         root = QWidget()
         layout = QVBoxLayout(root)
@@ -217,6 +218,7 @@ class NvdbDock(QDockWidget):
 
         self.button.setEnabled(False)
         self._pending = len(jobs)
+        self._empty.clear()
         for title, layer_name, geometry, style, sources, group, order in jobs:
             task = DownloadTask(
                 title, key, self.registry.schemaversion, sources, layer_name, geometry,
@@ -229,6 +231,7 @@ class NvdbDock(QDockWidget):
                 )
             )
             task.failed.connect(self._on_failed)
+            task.empty.connect(self._on_empty)
             self._tasks.append(task)
             QgsApplication.taskManager().addTask(task)
 
@@ -237,6 +240,8 @@ class NvdbDock(QDockWidget):
         if self._pending <= 0:
             self.button.setEnabled(True)
             self._tasks.clear()
+            if self._empty:
+                self.status.setText("Inga objekt i området: " + ", ".join(self._empty))
 
     def _on_completed(
         self, gpkg: str, layer_name: str, count: int, style: str, title: str = "",
@@ -268,6 +273,12 @@ class NvdbDock(QDockWidget):
             if (node.layer().customProperty("nvdb_order", 0) or 0) < order
         )
         group.insertLayer(position, layer)
+
+    def _on_empty(self, layer_name: str) -> None:
+        # Not an error: many tables have no objects in a small extent.
+        self.status.setText(f"{layer_name}: inga objekt i området")
+        self._empty.append(layer_name)
+        self._task_done()
 
     def _on_failed(self, message: str) -> None:
         self.status.setText(message)
