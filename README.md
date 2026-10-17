@@ -3,6 +3,7 @@
 QGIS plugin to download NVDB road data from Trafikverket's open API
 (Datautbytesportalen, "API Öppna Data") as GeoPackage in SWEREF 99 TM.
 The plugin is independent and not developed by Trafikverket or Lantmäteriet.
+Not related to tools for the Norwegian NVDB (Statens vegvesen), including archived ones: this plugin uses Trafikverket's Swedish API and covers Sweden only.
 
 Compatible with QGIS 3.34 up to 4.99 (Qt5 and Qt6).
 
