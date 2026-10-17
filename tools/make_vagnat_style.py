@@ -26,6 +26,7 @@ from qgis.core import (
 from qgis.PyQt.QtGui import QColor
 
 STREET_NAME_SIZE = 10  # points
+ROAD_NUMBER_SIZE = 10  # points
 
 STYLES = Path(__file__).resolve().parent.parent / "nvdb_downloader" / "styles"
 
@@ -41,7 +42,7 @@ def line(color: str, width: float, dash: str | None = None) -> QgsLineSymbol:
 def road_number_rule() -> QgsRuleBasedLabeling.Rule:
     """Road numbers (E6, 102 ...) in bold with a white halo, visible from 1:50 000."""
     text = QgsTextFormat()
-    text.setSize(8)
+    text.setSize(ROAD_NUMBER_SIZE)
     text.setSizeUnit(QgsUnitTypes.RenderUnit.RenderPoints)
     text.setColor(QColor(30, 30, 30))
     font = text.font()
