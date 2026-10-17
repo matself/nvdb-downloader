@@ -1,10 +1,37 @@
 {
-  "_comment": "Presets: tables from datasets.json that are fetched together and styled with styles/<style>.qml (omitted or missing style = unstyled). Layers are added to a group in the order listed here, topmost first, bottom layer last.",
+  "_comment": "Presets: either a list of layers (tables from datasets.json, fetched together and styled with styles/<style>.qml; topmost first) or one composite layer put together by a builder in core/network.py. Omitted or missing style = unstyled.",
   "presets": [
     {
       "id": "vagnat",
-      "title": "Vägnät: bil, cykel och gång",
-      "note": "Preliminärt urval, grundnätet underst.",
+      "title": "Vägnät: bil, cykel och gång (sammansatt)",
+      "note": "Ett lager: länkarna från Vägtrafiknät med klass från flera tabeller. Kräver ett utsnitt.",
+      "composite": {
+        "builder": "vagnat",
+        "layer_name": "vagnat",
+        "layer_title": "Vägnät",
+        "geometry": "linestring",
+        "style": "vagnat_vagnat",
+        "sources": [
+          "Vägtrafiknät",
+          "Vägslag",
+          "Motorväg",
+          "Motortrafikled",
+          "Gatutyp",
+          "FunktionellVägklass",
+          "GCMVägtyp",
+          "Gatunamn",
+          "Cirkulationsplats",
+          "Gågata",
+          "Gångfartsområde",
+          "Cykelgata",
+          "Färjeled"
+        ]
+      }
+    },
+    {
+      "id": "vagnat_lager",
+      "title": "Vägnät: separata lager",
+      "note": "Råa tabeller, var för sig. Luckor där Vägslag saknas.",
       "layers": [
         {
           "dataset": "Färjeled"

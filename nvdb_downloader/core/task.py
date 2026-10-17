@@ -43,6 +43,7 @@ class DownloadTask(QgsTask):
         output_dir: Path,
         stamp: str,
         style: str = "",
+        builder: Callable[[dict[str, list[dict]]], list[dict]] | None = None,
     ):
         super().__init__(f"NVDB: hämtar {title}", QgsTask.Flag.CanCancel)
         self.api_key = api_key
@@ -52,6 +53,7 @@ class DownloadTask(QgsTask):
         self.geometry = geometry
         self.bbox = bbox
         self.style = style
+        self.builder = builder
         self.gpkg_path = output_dir / f"{layer_name}_{stamp}.gpkg"
         self.feature_count = 0
         self.error: str | None = None
@@ -64,6 +66,7 @@ class DownloadTask(QgsTask):
 
     def run(self) -> bool:
         records: list[dict] = []
+        by_source: dict[str, list[dict]] = {}
         self.status.emit("söker…")
         try:
             for source in self.sources:
@@ -75,15 +78,24 @@ class DownloadTask(QgsTask):
                 ):
                     if source.transform:
                         page = [r for r in map(source.transform, page) if r is not None]
+                    by_source.setdefault(source.objecttype, []).extend(page)
                     records.extend(page)
                     self.status.emit(
-                        f"{source.objecttype}: {len(records)} objekt hämtade (anrop {page_no})"
+                        f"{source.objecttype}: {len(by_source[source.objecttype])} objekt "
+                        f"hämtade (anrop {page_no})"
                     )
         except NvdbApiError as e:
             self.error = str(e)
             return False
         if self.isCanceled():
             return False
+        if self.builder:
+            self.status.emit("sätter ihop vägnätet…")
+            try:
+                records = self.builder(by_source)
+            except Exception as e:  # noqa: BLE001 — report any build failure to the UI
+                self.error = f"Kunde inte sätta ihop lagret: {e}"
+                return False
         if not records:
             self.no_hits = True
             return False

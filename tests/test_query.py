@@ -58,25 +58,48 @@ sys.modules["presets"] = presets  # dataclasses needs the module registered
 _P.loader.exec_module(presets)
 
 
+_N = importlib.util.spec_from_file_location(
+    "network_for_presets",
+    Path(__file__).resolve().parent.parent / "nvdb_downloader" / "core" / "network.py",
+)
+network = importlib.util.module_from_spec(_N)
+_N.loader.exec_module(network)
+
+PLUGIN = Path(__file__).resolve().parent.parent / "nvdb_downloader"
+
+
 class PresetsTest(unittest.TestCase):
-    def test_every_preset_layer_is_in_the_register(self):
+    def _verified_ids(self):
         import json
-        path = Path(__file__).resolve().parent.parent / "nvdb_downloader" / "datasets.json"
-        datasets = json.loads(path.read_text(encoding="utf-8"))["datasets"]
-        ids = {d["id"] for d in datasets if d["verified"]}
+        datasets = json.loads((PLUGIN / "datasets.json").read_text(encoding="utf-8"))["datasets"]
+        return {d["id"] for d in datasets if d["verified"]}
+
+    def test_every_dataset_is_in_the_register(self):
+        ids = self._verified_ids()
         loaded = presets.load_presets()
         self.assertTrue(loaded)
         for preset in loaded:
-            self.assertTrue(preset.layers)
+            self.assertTrue(preset.layers or preset.composite, preset.id)
             for layer in preset.layers:
                 self.assertIn(layer.dataset_id, ids)
+            if preset.composite:
+                for dataset_id in preset.composite.sources:
+                    self.assertIn(dataset_id, ids)
+
+    def test_composite_builder_and_sources_match(self):
+        for preset in presets.load_presets():
+            c = preset.composite
+            if c:
+                self.assertIn(c.builder, network.BUILDERS)
+                self.assertEqual(set(c.sources), set(network.SOURCES))
 
     def test_styles_exist(self):
-        root = Path(__file__).resolve().parent.parent / "nvdb_downloader" / "styles"
         for preset in presets.load_presets():
-            for layer in preset.layers:
-                if layer.style:
-                    self.assertTrue((root / f"{layer.style}.qml").exists(), layer.style)
+            styles = [layer.style for layer in preset.layers]
+            if preset.composite:
+                styles.append(preset.composite.style)
+            for style in filter(None, styles):
+                self.assertTrue((PLUGIN / "styles" / f"{style}.qml").exists(), style)
 
 
 if __name__ == "__main__":

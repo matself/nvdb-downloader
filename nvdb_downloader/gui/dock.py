@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+from dataclasses import dataclass, field
 from datetime import datetime
 from pathlib import Path
 
@@ -37,9 +38,25 @@ from qgis.PyQt.QtWidgets import (
 
 from ..config import NVDB_CRS, PLUGIN_NAME, SETTINGS_PREFIX
 from ..core.auth import load_api_key, store_api_key
+from ..core.network import BUILDERS
 from ..core.presets import load_presets
 from ..core.registry import load_registry
 from ..core.task import DownloadTask, SourceSpec
+
+
+@dataclass(frozen=True)
+class Job:
+    """One layer to fetch: one or more sources, optionally put together by a builder."""
+
+    title: str
+    layer_name: str
+    geometry: str | None
+    style: str
+    sources: list[SourceSpec] = field(default_factory=list)
+    group: str = ""  # layer group in the project, for separate-layer presets
+    order: int = 0  # position in the group, topmost first
+    builder: object = None  # callable(dict[str, list[dict]]) -> list[dict]
+
 
 S_AUTHCFG = f"{SETTINGS_PREFIX}/authcfg"
 S_OUTDIR = f"{SETTINGS_PREFIX}/output_dir"
@@ -176,25 +193,33 @@ class NvdbDock(QDockWidget):
 
     # --- download --------------------------------------------------------
 
-    def _jobs(self):
-        """(title, layer_name, geometry, style, sources, group, order) per layer to fetch."""
+    def _jobs(self) -> list[Job]:
         reg = self.registry
+
+        def source(dataset_id: str) -> SourceSpec:
+            d = reg.get(dataset_id)
+            return SourceSpec(d.id, reg.namespace_of(d))
+
         jobs = []
         if self.tabs.currentIndex() == 0:
             for item in self.list.selectedItems():
                 d = reg.get(item.data(Qt.ItemDataRole.UserRole))
-                source = SourceSpec(d.id, reg.namespace_of(d))
-                jobs.append((d.title, d.id, d.geometry, "", [source], "", 0))
+                jobs.append(Job(d.title, d.id, d.geometry, "", [source(d.id)]))
         else:
             for item in self.preset_list.selectedItems():
                 preset_id = item.data(Qt.ItemDataRole.UserRole)
                 preset = next(p for p in self.presets if p.id == preset_id)
+                c = preset.composite
+                if c:
+                    jobs.append(Job(
+                        c.layer_title, c.layer_name, c.geometry, c.style,
+                        [source(i) for i in c.sources], builder=BUILDERS[c.builder],
+                    ))
                 for order, layer in enumerate(preset.layers):
                     d = reg.get(layer.dataset_id)
-                    source = SourceSpec(d.id, reg.namespace_of(d))
-                    jobs.append(
-                        (d.title, d.id, d.geometry, layer.style, [source], preset.title, order)
-                    )
+                    jobs.append(Job(
+                        d.title, d.id, d.geometry, layer.style, [source(d.id)], preset.title, order
+                    ))
         return jobs
 
     def _download(self) -> None:
@@ -205,6 +230,13 @@ class NvdbDock(QDockWidget):
         jobs = self._jobs()
         if not jobs:
             QMessageBox.information(self, PLUGIN_NAME, "Välj minst en post i listan.")
+            return
+        if self.area_all.isChecked() and any(job.builder for job in jobs):
+            QMessageBox.information(
+                self, PLUGIN_NAME,
+                "Sammansatta uttag sätts ihop i minnet och kräver ett utsnitt. "
+                "Välj kartans nuvarande utsnitt.",
+            )
             return
         if self.area_all.isChecked():
             answer = QMessageBox.question(
@@ -221,15 +253,15 @@ class NvdbDock(QDockWidget):
         self.button.setEnabled(False)
         self._pending = len(jobs)
         self._empty.clear()
-        for title, layer_name, geometry, style, sources, group, order in jobs:
+        for job in jobs:
             task = DownloadTask(
-                title, key, self.registry.schemaversion, sources, layer_name, geometry,
-                bbox, out, stamp, style,
+                job.title, key, self.registry.schemaversion, job.sources, job.layer_name,
+                job.geometry, bbox, out, stamp, job.style, job.builder,
             )
-            task.status.connect(lambda text, t=title: self.status.setText(f"{t}: {text}"))
+            task.status.connect(lambda text, t=job.title: self.status.setText(f"{t}: {text}"))
             task.completed.connect(
-                lambda gpkg, name, count, style, g=group, o=order, t=title: self._on_completed(
-                    gpkg, name, count, style, t, g, o
+                lambda gpkg, name, count, style, j=job: self._on_completed(
+                    gpkg, name, count, style, j.title, j.group, j.order
                 )
             )
             task.failed.connect(self._on_failed)
