@@ -18,9 +18,51 @@ with data; namespace and schema version are set per type in
    group and styled with QML from `nvdb_downloader/styles/`. A preset is defined in
    `nvdb_downloader/presets.json` (tables + style per layer). The first preset is a road
    network for cars, bikes and pedestrians; its tables and style are still tentative.
-   The `Vägslag` style is derived from Lantmäteriet's Topografi 10 `.qlr` with
-   `tools/make_vagslag_style.py` (three Väglinje layers merged, filters rewritten to the raw
-   NVDB fields). Check the redistribution terms of the `.qlr` before publishing.
+   The `Vägslag` style is derived from Lantmäteriet's Topografi 10 `.qlr` (published by
+   Lantmäteriet as open data) with `tools/make_vagslag_style.py` (three Väglinje layers
+   merged, filters rewritten to the raw NVDB fields).
+
+## User interface
+
+The user interface is in Swedish. This section explains it in English. The plugin adds a
+toolbar button and a menu entry (both named after the plugin) that show or hide a dock panel.
+
+### Dock panel
+Top to bottom:
+
+| Swedish label | English meaning | What it does |
+|---|---|---|
+| API-nyckel: sparad / API-nyckel saknas | API key: saved / API key missing | Shows whether a key is stored |
+| Ange API-nyckel… | Enter API key… | Asks for the key from data.trafikverket.se and stores it in QGIS' encrypted authentication database |
+| Rådata (tab) | Raw data | Pick any NVDB table and get its records unchanged |
+| Sök objekttyp… | Search object type… | Filters the table list as you type |
+| Uttag (tab) | Selections | Ready-made presets: several tables fetched together, grouped and styled |
+| Förvalda uttag: flera tabeller hämtas och stilsätts. | Presets: several tables are fetched and styled. | Explains the preset tab |
+| Kartans nuvarande utsnitt | Current map extent | Fetch only objects inside the visible map canvas |
+| Hela Sverige (kan vara stort) | All of Sweden (can be large) | Fetch the whole country, which can be very large |
+| Lägg till i kartan | Add to map | Load the downloaded layers into the project (on by default) |
+| … (next to the folder field) | Browse | Choose the output folder for the GeoPackage files |
+| Hämta | Fetch | Starts the download for the selected tables or preset |
+
+### Messages
+| Swedish message | English meaning | When it appears |
+|---|---|---|
+| Ange en API-nyckel först. | Enter an API key first. | Fetch pressed without a stored key |
+| Välj minst en post i listan. | Select at least one item in the list. | Fetch pressed with nothing selected |
+| Hela Sverige kan ge hundratusentals objekt per typ. Fortsätta? | All of Sweden can give hundreds of thousands of objects per type. Continue? | Confirmation before a nationwide download |
+| API-nyckel från data.trafikverket.se: | API key from data.trafikverket.se: | Prompt in the key dialog |
+| QGIS huvudlösenord krävs för att spara nyckeln. | The QGIS master password is required to save the key. | Key could not be stored without the master password |
+| Kunde inte spara nyckeln. | Could not save the key. | Storing the key failed |
+| söker… | searching… | Status while the first request runs |
+| N objekt hämtade (anrop M) | N objects fetched (request M) | Progress per page of results |
+| N objekt – skriver GeoPackage… | N objects, writing GeoPackage… | Status while the file is written |
+| X: N objekt sparade i fil | X: N objects saved in file | Download finished |
+| inga objekt i området / Inga objekt i området: … | no objects in the area / No objects in the area: … | The query returned nothing (not an error) |
+| Ogiltigt JSON-svar / Oväntat svar från API:t / Okänt API-fel / Okänt fel | Invalid JSON response / Unexpected API response / Unknown API error / Unknown error | API or processing errors |
+| Stilfil saknas / Kunde inte ladda stilen | Style file missing / Could not load the style | Logged as a warning in the QGIS message log |
+
+Layer, table and field names (for example Vägslag, Vägtrafiknät, Färjeled) are the Swedish
+names used by NVDB and are kept as they are.
 
 ## API
 | | |

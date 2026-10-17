@@ -1,5 +1,5 @@
 {
-  "_comment": "Förvalda uttag: tabeller ur datasets.json som hämtas tillsammans och stilsätts med styles/<style>.qml (utelämnad eller saknad stil = ingen stilsättning). Lagren läggs i en grupp i den ordning de står här, överst först, understa lagret sist.",
+  "_comment": "Presets: tables from datasets.json that are fetched together and styled with styles/<style>.qml (omitted or missing style = unstyled). Layers are added to a group in the order listed here, topmost first, bottom layer last.",
   "presets": [
     {
       "id": "vagnat",
