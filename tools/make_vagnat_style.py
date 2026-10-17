@@ -3,6 +3,7 @@
 Starts from the Vägslag style (the Topo10 road classes on `Typ`, made by
 make_vagslag_style.py) and adds rules for what Vägslag does not cover:
 cycle links, foot links and car links without a class, and labels for road numbers.
+The street name labels are made larger (Topo10 uses 6-6.5 points).
 
 Needs a QGIS Python (python-qgis.bat). Usage: python-qgis.bat tools/make_vagnat_style.py
 """
@@ -23,6 +24,8 @@ from qgis.core import (
     QgsVectorLayer,
 )
 from qgis.PyQt.QtGui import QColor
+
+STREET_NAME_SIZE = 10  # points
 
 STYLES = Path(__file__).resolve().parent.parent / "nvdb_downloader" / "styles"
 
@@ -58,6 +61,19 @@ def road_number_rule() -> QgsRuleBasedLabeling.Rule:
     return QgsRuleBasedLabeling.Rule(settings, 0, 50000, '"Vägnummer" IS NOT NULL', "Vägnummer")
 
 
+def enlarge_street_names(labeling: QgsRuleBasedLabeling) -> None:
+    for rule in labeling.rootRule().children():
+        settings = rule.settings()
+        if settings is None or settings.fieldName != "Gatunamn":
+            continue
+        text = settings.format()
+        text.setSize(STREET_NAME_SIZE)
+        text.setSizeUnit(QgsUnitTypes.RenderUnit.RenderPoints)
+        settings.setFormat(text)
+        rule.setSettings(settings)
+        rule.setDescription("Gatunamn")
+
+
 def main() -> None:
     app = QgsApplication([], False)
     app.initQgis()
@@ -77,6 +93,7 @@ def main() -> None:
         root.appendChild(rule)
     layer.setRenderer(renderer)
     labeling = layer.labeling()
+    enlarge_street_names(labeling)
     labeling.rootRule().appendChild(road_number_rule())
     layer.setLabeling(labeling)
     out = STYLES / "vagnat_vagnat.qml"
