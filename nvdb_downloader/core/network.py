@@ -22,18 +22,22 @@ CAR_NET = "bilnät"
 NO = "Nej"
 YES = "Ja"
 
-# FunktionellVägklass.Klass -> road type, last resort for links no other table classifies.
-# Derived from how the two agree where both exist; an approximation, flagged in Typ_kalla.
+# FunktionellVägklass.Klass -> road type, the last resort for links no other table classifies.
+# Only links that Vägslag, Motorväg, Motortrafikled and Gatutyp all miss get here, mostly
+# roads outside built-up areas, so the mapping is the most common Vägslag type for exactly
+# those links in the whole Skåne delivery (133 000 segments): about 90 % right when tested
+# on a held-out half, against 53 % for the obvious guess (class 4-5 = Huvudgata, 7 = Lokalgata
+# liten). Whether the link is inside a built-up area adds only 0.3 points, so it is not used.
 KLASS_TYP = {
-    "0": "Motorväg",
-    "1": "Övergripande länk",
+    "0": "Mötesfri väg",
+    "1": "Landsväg",
     "2": "Landsväg",
     "3": "Landsväg",
-    "4": "Huvudgata",
-    "5": "Huvudgata",
-    "6": "Lokalgata stor",
-    "7": "Lokalgata liten",
-    "8": "Småväg",
+    "4": "Landsväg liten",
+    "5": "Landsväg liten",
+    "6": "Landsväg liten",
+    "7": "Småväg",
+    "8": "Småväg enkel standard",
     "9": "Småväg enkel standard",
 }
 

@@ -21,7 +21,7 @@ with data; namespace and schema version are set per type in
      and the midpoint of the measure range) with attributes from the other tables
      (`core/network.py`). `Typ` (the Topo10 road class) is taken from the first table that has
      one: Vägslag, Motorväg, Motortrafikled, Gatutyp, and last FunktionellVägklass (class 0-9,
-     translated, an approximation). `Typ_kalla` says which. `Gatunamn` comes from Vägslag, then Gatunamn, then ÖvrigtVägnamn;
+     translated with a mapping measured against the Skåne delivery, about 90 % right). `Typ_kalla` says which. `Gatunamn` comes from Vägslag, then Gatunamn, then ÖvrigtVägnamn;
      `Vägnummer` (E22, 102 …) from Vägnummer. Cycle and foot links are classified
      by `GCM_TYP` (GCMVägtyp). Needs a map extent; the join runs in memory.
    - **Vägnät: separata lager** fetches the raw tables as separate layers.

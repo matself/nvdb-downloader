@@ -50,9 +50,7 @@ class ClassifyTest(unittest.TestCase):
         })
         self.assertEqual((gatutyp["Typ"], gatutyp["Typ_kalla"]), ("Kvartersväg", "Gatutyp"))
         klass = one({**base, "FunktionellVägklass": [attr(Klass="7")]})
-        self.assertEqual(
-            (klass["Typ"], klass["Typ_kalla"]), ("Lokalgata liten", "Funktionell vägklass")
-        )
+        self.assertEqual((klass["Typ"], klass["Typ_kalla"]), ("Småväg", "Funktionell vägklass"))
         self.assertEqual(klass["Funktionell_vagklass"], "7")
 
     def test_unclassified_car_link_has_no_type(self):
