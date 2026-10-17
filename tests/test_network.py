@@ -119,6 +119,29 @@ class JoinTest(unittest.TestCase):
         })
         self.assertEqual(rec["Gatunamn"], "Storgatan")
 
+    def test_other_road_name_is_the_last_fallback(self):
+        rec = one({"Vägtrafiknät": [link()], "ÖvrigtVägnamn": [attr(Namn="Lundalänken")]})
+        self.assertEqual(rec["Gatunamn"], "Lundalänken")
+        both = one({
+            "Vägtrafiknät": [link()],
+            "Gatunamn": [attr(Namn="Storgatan", Seq_No=1)],
+            "ÖvrigtVägnamn": [attr(Namn="Lundalänken")],
+        })
+        self.assertEqual(both["Gatunamn"], "Storgatan")
+
+    def test_road_numbers(self):
+        rec = one({
+            "Vägtrafiknät": [link()],
+            "Vägnummer": [
+                attr(Huvudnummer=22, Undernummer=0, Europaväg=-1),
+                attr(Huvudnummer=102, Undernummer=0, Europaväg=0),
+                attr(Huvudnummer=6, Undernummer=2, Europaväg=-1),
+                attr(Huvudnummer=102, Undernummer=0, Europaväg=0),  # duplicate is dropped
+            ],
+        })
+        self.assertEqual(rec["Vägnummer"], "E6.02, E22, 102")
+        self.assertIsNone(one({"Vägtrafiknät": [link()]})["Vägnummer"])
+
     def test_gcm_type_and_geometry_are_carried(self):
         rec = one({
             "Vägtrafiknät": [link(net="cykelnät")], "GCMVägtyp": [attr(GCM_TYP="Cykelfält")],

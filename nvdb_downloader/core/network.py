@@ -55,6 +55,8 @@ SOURCES = (
     "FunktionellVägklass",
     "GCMVägtyp",
     "Gatunamn",
+    "ÖvrigtVägnamn",
+    "Vägnummer",
     *FLAGS,
 )
 
@@ -67,19 +69,47 @@ class _Index:
         for record in records:
             self._by_id[record.get("Element_Id")].append(record)
 
-    def find(self, element_id, start, end) -> Record | None:
+    def find_all(self, element_id, start, end) -> list[Record]:
         middle = (start + end) / 2
+        found = []
         for record in self._by_id.get(element_id, ()):
             low, high = record.get("Start_Measure"), record.get("End_Measure")
             if low is not None and high is not None and low <= middle <= high:
-                return record
-        return None
+                found.append(record)
+        return found
+
+    def find(self, element_id, start, end) -> Record | None:
+        found = self.find_all(element_id, start, end)
+        return found[0] if found else None
 
 
 def _measures(record: Record) -> tuple[float, float]:
     """The measure range; 0 is a real value (zero-length links), only None means unknown."""
     start, end = record.get("Start_Measure"), record.get("End_Measure")
     return (0.0 if start is None else start), (1.0 if end is None else end)
+
+
+def road_numbers(records: list[Record]) -> str | None:
+    """Display text of the road numbers on a link: E22, 102, E6.02.
+
+    Several numbers are comma separated, European roads first, then by number."""
+    numbers = []
+    ordered = sorted(
+        records,
+        key=lambda r: (
+            not r.get("Europaväg"), r.get("Huvudnummer") or 0, r.get("Undernummer") or 0
+        ),
+    )
+    for record in ordered:
+        main = record.get("Huvudnummer")
+        if main is None:
+            continue
+        text = f"{'E' if record.get('Europaväg') else ''}{main}"
+        if record.get("Undernummer"):
+            text += f".{record['Undernummer']:02d}"
+        if text not in numbers:
+            numbers.append(text)
+    return ", ".join(numbers) or None
 
 
 def _yes_no(value: Any) -> str | None:
@@ -127,7 +157,7 @@ def build_network(tables: Tables) -> list[Record]:
         typ, source = classify(
             link.get("Nättyp"), vagslag, at("Motorväg"), at("Motortrafikled"), gatutyp, klass
         )
-        gcm, name = at("GCMVägtyp"), at("Gatunamn")
+        gcm, name, other_name = at("GCMVägtyp"), at("Gatunamn"), at("ÖvrigtVägnamn")
         record: Record = {
             "Element_Id": element_id,
             "Start_Measure": link.get("Start_Measure"),
@@ -143,7 +173,12 @@ def build_network(tables: Tables) -> list[Record]:
                 or _yes_no((gatutyp or {}).get("Avfartsväg_Påfartsväg"))
                 or NO
             ),
-            "Gatunamn": (vagslag or {}).get("Gatunamn") or (name or {}).get("Namn"),
+            "Gatunamn": (
+                (vagslag or {}).get("Gatunamn")
+                or (name or {}).get("Namn")
+                or (other_name or {}).get("Namn")
+            ),
+            "Vägnummer": road_numbers(index["Vägnummer"].find_all(element_id, start, end)),
             "GCM_TYP": gcm.get("GCM_TYP") if gcm else None,
         }
         for table, field in FLAGS.items():
