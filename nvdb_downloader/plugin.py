@@ -33,7 +33,7 @@ class NvdbDownloaderPlugin:
         self.action.setCheckable(True)
         self.action.toggled.connect(self._toggle_dock)
         self.iface.addToolBarIcon(self.action)
-        self.iface.addPluginToMenu(PLUGIN_NAME, self.action)
+        self.iface.addPluginToWebMenu(PLUGIN_NAME, self.action)
 
     def unload(self):
         if self.dock is not None:
@@ -42,7 +42,7 @@ class NvdbDownloaderPlugin:
             self.dock = None
         if self.action is not None:
             self.iface.removeToolBarIcon(self.action)
-            self.iface.removePluginMenu(PLUGIN_NAME, self.action)
+            self.iface.removePluginWebMenu(PLUGIN_NAME, self.action)
             self.action.deleteLater()
             self.action = None
         if self.translator is not None:

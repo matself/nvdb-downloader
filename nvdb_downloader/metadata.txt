@@ -6,16 +6,16 @@ description=Search and download NVDB road data from Trafikverket's open API
 version=0.1.0
 author=Mats Elfström
 email=mats.elfstrom@gmail.com
-about=Download NVDB road data (speed limits, road numbers, road network and more) from Trafikverket's open API for the current map extent or all of Sweden, saved as GeoPackage in SWEREF 99 TM. A second tab fetches ready-made, styled selections of tables, such as a complete road network for cars, bikes and pedestrians. Requires a free API key from data.trafikverket.se. The user interface is in Swedish; the README contains an English guide to every control and message. The plugin is independent and not developed by Trafikverket or Lantmäteriet.
+about=Download NVDB road data (road network, speed limits, road classes, road numbers and more) from Trafikverket's open API for the current map extent, saved as GeoPackage in SWEREF 99 TM. The first tab fetches any single NVDB table. The second tab fetches ready-made presets; the main one builds one road network layer for cars, bikes and pedestrians by joining several NVDB tables, and styles it with a style derived from Lantmäteriet's open Topografi 10 style. Covers Sweden only. Requires a free API key from data.trafikverket.se, stored in the QGIS authentication database. No extra Python packages are needed. The user interface is in Swedish; the README contains an English guide to every control and message. The plugin is independent and not developed by Trafikverket or Lantmäteriet.
 tracker=https://github.com/matself/nvdb-downloader/issues
 repository=https://github.com/matself/nvdb-downloader
 homepage=https://github.com/matself/nvdb-downloader
 category=Web
-icon=icon.svg
-tags=nvdb,trafikverket,sweden,roads,open data
+icon=icon.png
+tags=nvdb,trafikverket,sweden,roads,road network,open data,geopackage
 experimental=True
 deprecated=False
 license=GPL-2.0-or-later
 hasProcessingProvider=no
 changelog=
-    0.1.0 - Initial version
+    0.1.0 - Initial version: download of single NVDB tables and a combined, styled road network layer
