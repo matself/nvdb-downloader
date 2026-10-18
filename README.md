@@ -7,6 +7,8 @@ Not related to tools for the Norwegian NVDB (Statens vegvesen), such as the arch
 
 Compatible with QGIS 3.34 up to 4.99 (Qt5 and Qt6).
 
+Swedish user guide: [docs/anvandning.md](docs/anvandning.md).
+
 ## Status
 Early prototype (0.1.0). API key → select object types → area (map extent or all of
 Sweden) → GeoPackage → layer in the project. All 45 NVDB object types on the portal answer
