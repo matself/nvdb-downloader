@@ -30,6 +30,9 @@ STREET_NAME_SIZE = 10  # points
 ROAD_NUMBER_SIZE = 10  # points
 FONT = "Arial"
 MAX_SCALE_DENOM = 5001  # labels are shown at 1:5001 and larger scales
+ON_LINE_UPRIGHT = (
+    QgsLabeling.LinePlacementFlag.OnLine | QgsLabeling.LinePlacementFlag.MapOrientation
+)
 
 STYLES = Path(__file__).resolve().parent.parent / "nvdb_downloader" / "styles"
 
@@ -43,7 +46,7 @@ def line(color: str, width: float, dash: str | None = None) -> QgsLineSymbol:
 
 
 def road_number_rule() -> QgsRuleBasedLabeling.Rule:
-    """Road numbers (E6, 102 ...) in bold Arial with a 1 mm white buffer, on the line, visible from 1:5001."""
+    """Road numbers (E6, 102 ...): bold Arial, 1 mm white buffer, on the line, from 1:5001."""
     text = QgsTextFormat()
     text.setColor(QColor(30, 30, 30))
     font = QFont(FONT)
@@ -56,9 +59,11 @@ def road_number_rule() -> QgsRuleBasedLabeling.Rule:
     settings.fieldName = "Vägnummer"
     settings.setFormat(text)
     settings.placement = Qgis.LabelPlacement.Curved
-    settings.placementFlags = QgsLabeling.LinePlacementFlag.OnLine | QgsLabeling.LinePlacementFlag.MapOrientation
+    settings.placementFlags = ON_LINE_UPRIGHT
     settings.priority = 7
-    return QgsRuleBasedLabeling.Rule(settings, 0, MAX_SCALE_DENOM, '"Vägnummer" IS NOT NULL', "Vägnummer")
+    return QgsRuleBasedLabeling.Rule(
+        settings, 0, MAX_SCALE_DENOM, '"Vägnummer" IS NOT NULL', "Vägnummer"
+    )
 
 
 def white_buffer() -> QgsTextBufferSettings:
@@ -81,7 +86,7 @@ def enlarge_street_names(labeling: QgsRuleBasedLabeling) -> None:
         text.setSizeUnit(QgsUnitTypes.RenderUnit.RenderPoints)
         text.setBuffer(white_buffer())
         settings.setFormat(text)
-        settings.placementFlags = QgsLabeling.LinePlacementFlag.OnLine | QgsLabeling.LinePlacementFlag.MapOrientation
+        settings.placementFlags = ON_LINE_UPRIGHT
         rule.setSettings(settings)
         rule.setDescription("Gatunamn")
 
