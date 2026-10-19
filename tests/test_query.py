@@ -27,6 +27,10 @@ class BuildRequestTest(unittest.TestCase):
         self.assertIn("<FILTER></FILTER>", xml)
         self.assertNotIn("skip=", xml)
 
+    def test_attribute_values_are_escaped(self):
+        xml = query.build_request('a"b<c&d', "T", "ns", "1.2", 1)
+        self.assertIn('authenticationkey="a&quot;b&lt;c&amp;d"', xml)
+
     def test_key_is_escaped(self):
         xml = query.build_request('a"b', "T", "ns", "1.2", 1)
         self.assertNotIn('authenticationkey="a"b"', xml)

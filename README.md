@@ -10,7 +10,7 @@ Compatible with QGIS 3.34 up to 4.99 (Qt5 and Qt6).
 Swedish user guide: [docs/anvandning.md](docs/anvandning.md).
 
 ## Status
-Version 1.0.0. API key → select object types → area (map extent or all of
+Version 1.0.1. API key → select object types → area (map extent or all of
 Sweden) → GeoPackage → layer in the project. All 45 NVDB object types on the portal answer
 with data; namespace and schema version are set per type in
 `nvdb_downloader/datasets.json`.
@@ -106,7 +106,7 @@ New-Item -ItemType Junction `
 Build an installable zip:
 
 ```bash
-python scripts/build_zip.py   # -> dist/nvdb_downloader-1.0.0.zip
+python scripts/build_zip.py   # -> dist/nvdb_downloader-1.0.1.zip
 ```
 
 ## Qt5 / Qt6 compatibility rules

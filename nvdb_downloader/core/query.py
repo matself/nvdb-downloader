@@ -3,11 +3,16 @@ Trafikverket's Öppna API (datacache)."""
 
 from __future__ import annotations
 
+from html import escape
 from typing import Any
-from xml.sax.saxutils import quoteattr
 
 GEOMETRY_FIELD = "Geometry.WKT-SWEREF99TM-3D"
 WKT_KEY = "WKT-SWEREF99TM-3D"
+
+
+def _attr(value: str) -> str:
+    """A double-quoted XML attribute value. Only builds requests, never parses XML."""
+    return '"' + escape(str(value), quote=True) + '"'
 
 
 class NvdbApiError(Exception):
@@ -30,16 +35,16 @@ def build_request(
         xmin, ymin, xmax, ymax = bbox
         value = f"{xmin:.1f} {ymin:.1f}, {xmax:.1f} {ymax:.1f}"
         within = (
-            f'<INTERSECTS name="{GEOMETRY_FIELD}" shape="box" value={quoteattr(value)}/>'
+            f'<INTERSECTS name="{GEOMETRY_FIELD}" shape="box" value={_attr(value)}/>'
         )
     else:
         within = ""
     skip_attr = f' skip="{int(skip)}"' if skip else ""
     return (
         "<REQUEST>"
-        f"<LOGIN authenticationkey={quoteattr(api_key)}/>"
-        f"<QUERY objecttype={quoteattr(objecttype)} namespace={quoteattr(namespace)}"
-        f' schemaversion={quoteattr(schemaversion)} limit="{int(limit)}"{skip_attr}>'
+        f"<LOGIN authenticationkey={_attr(api_key)}/>"
+        f"<QUERY objecttype={_attr(objecttype)} namespace={_attr(namespace)}"
+        f' schemaversion={_attr(schemaversion)} limit="{int(limit)}"{skip_attr}>'
         f"<FILTER>{within}</FILTER>"
         "</QUERY></REQUEST>"
     )
