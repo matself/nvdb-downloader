@@ -1,3 +1,5 @@
+# SPDX-License-Identifier: GPL-2.0-or-later
+# Copyright (C) 2026 Mats Elfström
 """Pure helpers (no QGIS imports) to build requests to and parse responses from
 Trafikverket's Öppna API (datacache)."""
 

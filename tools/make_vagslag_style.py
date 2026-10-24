@@ -1,3 +1,5 @@
+# SPDX-License-Identifier: GPL-2.0-or-later
+# Copyright (C) 2026 Mats Elfström
 """Build a Vägslag QML style from Lantmäteriet's Topografi 10 .qlr.
 
 Topo10 draws roads in three layers (normal roads on top, ramps, then underpasses and

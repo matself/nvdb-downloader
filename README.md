@@ -117,6 +117,17 @@ python scripts/build_zip.py   # -> dist/nvdb_downloader-1.0.1.zip
 - Put anything that differs between QGIS 3 and 4 in `nvdb_downloader/compat.py`.
 - plugins.qgis.org runs an automatic Qt6 check on upload (see the *Qt6 Check* tab).
 
+## Dependencies and acknowledgements
+
+- Runs inside [QGIS](https://qgis.org) (GPL-2.0-or-later) and uses PyQt/Qt and
+  [GDAL/OGR](https://gdal.org) as shipped with it. No third-party packages are bundled.
+- Data comes from Trafikverket's Öppna API (NVDB). See https://data.trafikverket.se for terms.
+- The road network style is derived from Lantmäteriet's Topografi 10 style (open data).
+- Project structure derived from the author's QGIS plugin template and the plugins
+  ngp-downloader and LM-STAC-Downloader (GPL-2.0).
+- Developed with AI assistance (Claude Code). See [docs/SOURCES.md](docs/SOURCES.md).
+- The plugin is independent and not developed by Trafikverket or Lantmäteriet.
+
 ## License
 
 GPL-2.0-or-later - see [LICENSE](LICENSE).

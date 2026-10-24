@@ -1,3 +1,5 @@
+# SPDX-License-Identifier: GPL-2.0-or-later
+# Copyright (C) 2026 Mats Elfström
 """Background task: fetch one or more NVDB object types and save them as one
 GeoPackage layer."""
 

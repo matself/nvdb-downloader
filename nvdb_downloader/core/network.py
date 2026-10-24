@@ -1,3 +1,5 @@
+# SPDX-License-Identifier: GPL-2.0-or-later
+# Copyright (C) 2026 Mats Elfström
 """Build one road network layer from several NVDB tables.
 
 NVDB stores the road links in Vägtrafiknät and puts every other property in its own table,

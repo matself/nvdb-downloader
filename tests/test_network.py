@@ -1,3 +1,5 @@
+# SPDX-License-Identifier: GPL-2.0-or-later
+# Copyright (C) 2026 Mats Elfström
 """Tests for the network builder. Run: python -m pytest tests/test_network.py"""
 
 import importlib.util

@@ -1,3 +1,5 @@
+# SPDX-License-Identifier: GPL-2.0-or-later
+# Copyright (C) 2026 Mats Elfström
 """Build dist/<module>-<version>.zip, ready for 'Install from ZIP' or plugins.qgis.org."""
 import configparser
 import zipfile

@@ -1,3 +1,5 @@
+# SPDX-License-Identifier: GPL-2.0-or-later
+# Copyright (C) 2026 Mats Elfström
 """Loads the preset register (presets.json): ready-made selections of NVDB tables
 with a QML style. No QGIS imports, so it can be tested with plain Python.
 

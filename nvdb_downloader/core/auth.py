@@ -1,3 +1,5 @@
+# SPDX-License-Identifier: GPL-2.0-or-later
+# Copyright (C) 2026 Mats Elfström
 """The API key lives in QGIS' encrypted authentication database.
 
 The plugin only keeps the id of the auth configuration (authcfg). The key is

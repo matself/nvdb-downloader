@@ -1,3 +1,5 @@
+# SPDX-License-Identifier: GPL-2.0-or-later
+# Copyright (C) 2026 Mats Elfström
 """Build the style of the composite road network layer (styles/vagnat_vagnat.qml).
 
 Starts from the Vägslag style (the Topo10 road classes on `Typ`, made by

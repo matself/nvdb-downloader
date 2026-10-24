@@ -1,3 +1,5 @@
+# SPDX-License-Identifier: GPL-2.0-or-later
+# Copyright (C) 2026 Mats Elfström
 """HTTP client for the Öppna API. Uses QgsBlockingNetworkRequest so QGIS proxy and
 SSL settings apply. Safe to use from a QgsTask worker thread."""
 

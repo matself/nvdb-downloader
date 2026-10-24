@@ -1,3 +1,5 @@
+# SPDX-License-Identifier: GPL-2.0-or-later
+# Copyright (C) 2026 Mats Elfström
 """Write NVDB records to a GeoPackage layer (SWEREF 99 TM)."""
 
 from __future__ import annotations

@@ -1,3 +1,5 @@
+# SPDX-License-Identifier: GPL-2.0-or-later
+# Copyright (C) 2026 Mats Elfström
 """Small shims so the same code runs on QGIS 3 (Qt5) and QGIS 4 (Qt6).
 
 Rules of thumb for the rest of the plugin:

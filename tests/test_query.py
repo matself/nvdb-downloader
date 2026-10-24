@@ -1,3 +1,5 @@
+# SPDX-License-Identifier: GPL-2.0-or-later
+# Copyright (C) 2026 Mats Elfström
 """Tests for the pure query helpers. Run: python -m unittest discover -s tests"""
 
 import importlib.util

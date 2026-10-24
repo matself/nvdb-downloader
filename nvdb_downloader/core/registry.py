@@ -1,3 +1,5 @@
+# SPDX-License-Identifier: GPL-2.0-or-later
+# Copyright (C) 2026 Mats Elfström
 """Loads the dataset register (datasets.json)."""
 
 from __future__ import annotations

@@ -1,3 +1,5 @@
+# SPDX-License-Identifier: GPL-2.0-or-later
+# Copyright (C) 2026 Mats Elfström
 """Metadata checks that do not need QGIS."""
 import configparser
 from pathlib import Path

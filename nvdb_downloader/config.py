@@ -1,3 +1,5 @@
+# SPDX-License-Identifier: GPL-2.0-or-later
+# Copyright (C) 2026 Mats Elfström
 """Endpoints and constants for Trafikverket's Öppna API (NVDB data)."""
 
 PLUGIN_NAME = "Geodata: NVDB downloader (Trafikverket)"
