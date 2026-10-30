@@ -1,3 +1,5 @@
+<img src="nvdb_downloader/icon.svg" alt="Plugin icon" width="72" height="72" align="right">
+
 # NVDB downloader
 
 QGIS plugin to download NVDB road data from Trafikverket's open API
